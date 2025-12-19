@@ -1,0 +1,122 @@
+<!-- # AI 助手 - 天气查询与对话系统
+
+本项目是一个支持自定义 API 地址、多模型选择、流式响应与 Token 费用统计的 Web 聊天界面，作为课程作业开发完成。
+
+---
+
+## 📜 开源许可
+
+本项目代码采用 **MIT License** 开源（详见 [`LICENSE`](LICENSE) 文件）。  
+你可以自由地：
+
+- ✅ 阅读、学习、参考实现思路；
+- ✅ 在个人项目或非学术场景中使用；
+- ✅ 修改并用于开源贡献（需保留原作者版权声明）。
+
+---
+
+## 🚫 学术诚信特别声明
+
+> ⚠️ **本项目为原创课程作业，严禁任何形式的学术不端行为！**
+
+**明确禁止以下用途**：
+- 将本项目的全部或部分代码直接提交为自己的课程作业、实验报告或毕业设计；
+- 仅修改变量名、注释或少量逻辑后声称是自己独立完成的作品；
+- 在未明确引用、未获得授权的情况下，将本项目用于任何需要“原创性”评估的学术场景。
+
+**允许的合理使用**：
+- 作为技术参考，理解前端交互、API 集成、流式响应等实现方式；
+- 在非学术项目（如个人博客、开源工具）中复用部分代码（遵守 MIT 要求）；
+- 引用本项目时，请注明原始作者与项目链接。
+
+> 📌 **重要提醒**：  
+> 开源 ≠ 放弃著作权 ≠ 允许抄袭。  
+> 根据《高等学校科学技术学术规范指南》及多数高校规定，**未经声明直接使用他人开源代码作为个人作业成果，属于学术不端行为**。
+
+---
+
+## 🙏 致谢与交流
+
+欢迎提出 Issue 或 PR 进行技术讨论！  
+但请勿请求“帮我改成另一个作业”或“去掉作者信息”——这违背本项目开源初衷。
+
+作者：[EterUltimate]  
+邮箱：1831303476@qq.com
+学校：[zjnu] -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI 助手 - 由New API驱动(By EterUltimate)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- API设置面板 -->
+    <div class="settings-panel">
+      <h2>⚙️ 设置</h2>
+      
+      <div class="form-group">
+        <label for="apiBaseUrl">🌐 API 基础 URL 
+          <span class="tooltip-icon" title="例如：https://api.gemai.cc 或你的代理地址">ⓘ</span>
+        </label>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="text" id="apiBaseUrl" placeholder="https://api.gemai.cc" />
+          <button id="saveBaseUrl" style="padding: 6px 12px; font-size: 0.9em;">💾 保存</button>
+        </div>
+        <div class="model-desc" id="baseUrlStatus">默认使用官方 API 地址。</div>
+      </div>
+
+      <div class="form-group">
+        <label for="apiKey">🔑 New API 密钥</label>
+        <input type="password" id="apiKey" placeholder="sk-xxxxxx" />
+      </div>
+
+      <div class="form-group">
+        <label for="modelSelect">🤖 选择模型 
+          <span class="tooltip-icon" title="从 API 实时加载可用模型">ⓘ</span>
+        </label>
+        <select id="modelSelect" disabled>
+          <option value="">— 加载中 —</option>
+        </select>
+        <div class="model-desc" id="modelDesc">请先保存 API 密钥以加载模型列表。</div>
+      </div>
+
+      <button id="saveSettings">🔐 保存密钥</button>
+      <button id="themeToggle">🌓 切换主题</button>
+    </div>
+
+    <!-- 信息栏 -->
+    <div class="header-info">
+      <div class="info-item">
+        <span class="label">🕒 时间：</span>
+        <span id="timeData"></span>
+      </div>
+      <div class="info-item">
+        <span class="label">📍 城市：</span>
+        <input type="text" id="cityInput" placeholder="输入城市名（如 北京、Tokyo）" value="温州" />
+      </div>
+      <div class="info-item">
+        <span class="label">🌦 天气：</span>
+        <span id="weatherData">加载中...</span>
+      </div>
+      <div class="info-item">
+        <span class="label">💰 费用：</span>
+        <span id="costData">未开始对话</span>
+      </div>
+    </div>
+
+    <!-- 聊天区域 -->
+    <div id="chatMessages"></div>
+
+    <!-- 输入区 -->
+    <div class="input-area">
+      <input type="text" id="messageInput" placeholder="输入消息...（回车发送）" disabled />
+      <button id="sendBtn" disabled>➤ 发送</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
