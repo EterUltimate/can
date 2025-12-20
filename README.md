@@ -13,7 +13,7 @@
 - ✅ 阅读、学习、参考实现思路；
 - ✅ 在个人项目或非学术场景中使用；
 - ✅ 修改并用于开源贡献（需保留原作者版权声明）。
--  https://eterultimate.github.io/can/AI chat assistent mutiple pages/pages/chat.html
+-  https://eterultimate.github.io/can/AIChatAssistentMutiplePages/pages/chat.html
 
 ---
 
