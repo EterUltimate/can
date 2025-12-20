@@ -1,5 +1,5 @@
  # AI 助手 - 天气查询与对话系统
- AI chat assistent mutiple pages/pages/chat.html
+
 
 本项目是一个支持自定义 API 地址、多模型选择、流式响应与 Token 费用统计的 Web 聊天界面，作为课程作业开发完成。
 
@@ -13,6 +13,7 @@
 - ✅ 阅读、学习、参考实现思路；
 - ✅ 在个人项目或非学术场景中使用；
 - ✅ 修改并用于开源贡献（需保留原作者版权声明）。
+-  https://eterultimate.github.io/can/AI chat assistent mutiple pages/pages/chat.html
 
 ---
 
