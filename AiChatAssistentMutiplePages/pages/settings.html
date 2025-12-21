@@ -28,6 +28,14 @@
         <input type="text" id="apiBaseUrl" placeholder="https://api.gemai.cc" />
       </div>
 
+      <div class="setting-item">
+  <label for="modelSelect">模型 (Model)</label>
+  <select id="modelSelect" disabled>
+    <option value="">加载中...</option>
+  </select>
+  <button type="button" id="refreshModels" style="margin-left: 8px;">🔄 刷新</button>
+      </div>
+      
       <button id="saveSettings">💾 保存设置</button>
       <button id="themeToggle" style="margin-top: 10px;">🌓 切换主题</button>
     </div>
@@ -35,4 +43,5 @@
 
   <script src="../script.js"></script>
 </body>
+
 </html>
