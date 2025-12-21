@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 助手</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="light-theme">
+  <!-- 移动端菜单按钮 -->
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- 侧边栏（桌面） / 抽屉（移动） -->
+  <aside class="sidebar" id="sidebar">
+    <div class="nav-item active" data-panel="chat">
+      <i class="fas fa-comments"></i> 聊天
+    </div>
+    <div class="nav-item" data-panel="weather">
+      <i class="fas fa-cloud-sun"></i> 天气
+    </div>
+    <div class="nav-item" data-panel="analytics">
+      <i class="fas fa-chart-line"></i> 用量统计
+    </div>
+    <div class="nav-item" data-panel="settings">
+      <i class="fas fa-cog"></i> 设置
+    </div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <header class="top-bar">
+      <h1>AI 助手</h1>
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </header>
+
+    <div class="content-area">
+      <!-- 聊天面板 -->
+      <div class="panel active" id="panel-chat">
+        <div class="chat-container">
+          <div id="chatMessages"></div>
+          <div class="input-area">
+            <textarea id="messageInput" placeholder="输入消息... (Enter 发送)"></textarea>
+            <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+          </div>
+          <button id="clearChat">清空聊天</button>
+        </div>
+      </div>
+
+      <!-- 天气面板 -->
+      <div class="panel" id="panel-weather">
+        <div class="card">
+          <h2><i class="fas fa-cloud-sun"></i> 实时天气</h2>
+          <input type="text" id="cityInput" placeholder="输入城市名，按回车查询" />
+          <div id="weatherDisplay"></div>
+        </div>
+      </div>
+
+      <!-- 用量统计面板 -->
+      <div class="panel" id="panel-analytics">
+        <div class="card">
+          <h2><i class="fas fa-chart-line"></i> Token 使用统计</h2>
+          <div class="metrics" id="thisSession"></div>
+          <button id="resetStats">重置统计</button>
+        </div>
+      </div>
+
+      <!-- 设置面板 -->
+      <div class="panel" id="panel-settings">
+        <div class="card">
+          <h2><i class="fas fa-cog"></i> API 设置</h2>
+          <label>API 密钥</label>
+          <input type="password" id="apiKey" placeholder="sk-xxxxxx" />
+
+          <label>API 基础 URL</label>
+          <input type="text" id="apiBaseUrl" placeholder="https://api.gemai.cc" />
+
+          <label>模型选择</label>
+          <select id="modelSelect" disabled>
+            <option value="">请先保存设置并刷新</option>
+          </select>
+
+          <div class="button-group">
+            <button id="saveSettings"><i class="fas fa-save"></i> 保存设置</button>
+            <button id="refreshModels"><i class="fas fa-sync"></i> 刷新模型</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 移动端底部导航 -->
+  <nav class="mobile-nav">
+    <a class="mobile-nav-item active" data-panel="chat">
+      <i class="fas fa-comments"></i>
+      <span>聊天</span>
+    </a>
+    <a class="mobile-nav-item" data-panel="weather">
+      <i class="fas fa-cloud-sun"></i>
+      <span>天气</span>
+    </a>
+    <a class="mobile-nav-item" data-panel="analytics">
+      <i class="fas fa-chart-line"></i>
+      <span>用量</span>
+    </a>
+    <a class="mobile-nav-item" data-panel="settings">
+      <i class="fas fa-cog"></i>
+      <span>设置</span>
+    </a>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
