@@ -221,14 +221,110 @@ async function initChatPage() {
       // 作为替代，我们可以估算（按字符数粗略换算），或后续加一个非流式 fallback
 
       // 保存 token 统计（这里先跳过，因流式无 usage；你可在 analytics 页说明）
-      // totalInputTokens += ...; totalOutputTokens += ...; saveTokenStats();
+function initSettingsPage() {
+  // 填充已保存设置
+  document.getElementById('apiKey').value = settings.apiKey;
+  document.getElementById('apiBaseUrl').value = settings.apiBaseUrl;
+
+  const modelSelect = document.getElementById('modelSelect');
+  const refreshBtn = document.getElementById('refreshModels');
+
+  // 加载模型列表
+  async function loadModels() {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const baseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://api.gemai.cc';
+
+    if (!apiKey) {
+      modelSelect.innerHTML = '<option value="">请先填写 API 密钥</option>';
+      modelSelect.disabled = true;
+      return;
+    }
+
+    try {
+      modelSelect.disabled = true;
+      modelSelect.innerHTML = '<option value="">加载中...</option>';
+
+      const res = await fetch(`${baseUrl.replace(/\/+$/, '')}/v1/models`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      }
+
+      const data = await res.json();
+      const models = data.data || [];
+
+      if (models.length === 0) {
+        modelSelect.innerHTML = '<option value="">未返回任何模型</option>';
+        return;
+      }
+
+      // 清空并填充选项
+      modelSelect.innerHTML = '';
+      models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.id;
+        if (m.id === settings.model) {
+          opt.selected = true;
+        }
+        modelSelect.appendChild(opt);
+      });
+
+      // 如果当前 settings.model 不在列表中，但有默认值，可设为第一个
+      if (!settings.model && models.length > 0) {
+        settings.model = models[0].id;
+        modelSelect.value = settings.model;
+      }
 
     } catch (error) {
-      console.error('API 调用失败:', error);
-      aiMessageEl.innerHTML = `❌ 请求失败: ${error.message || '未知错误'}<br>
-        <small>请检查 API 密钥、URL 或网络</small>`;
+      console.error('加载模型失败:', error);
+      modelSelect.innerHTML = `<option value="">❌ 加载失败: ${error.message}</option>`;
+    } finally {
+      modelSelect.disabled = false;
     }
   }
+
+  // 初次加载
+  loadModels();
+
+  // 刷新按钮
+  refreshBtn?.addEventListener('click', loadModels);
+
+  // 监听模型选择变化
+  modelSelect?.addEventListener('change', (e) => {
+    settings.model = e.target.value;
+    saveSettings(); // 实时保存
+  });
+
+  // 保存按钮（原有逻辑）
+  document.getElementById('saveSettings')?.addEventListener('click', () => {
+    settings.apiKey = document.getElementById('apiKey').value.trim();
+    settings.apiBaseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://api.gemai.cc';
+    
+    try {
+      new URL(settings.apiBaseUrl);
+    } catch (e) {
+      alert('请输入有效的 API 基础 URL！');
+      return;
+    }
+    
+    saveSettings();
+    alert('✅ 设置已保存！');
+
+    // 保存后重新加载模型（因为 baseURL 或 key 可能变了）
+    loadModels();
+  });
+  
+  // 切换主题
+  document.getElementById('themeToggle')?.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+  });
 }
 
 function initWeatherPage() {
@@ -350,3 +446,4 @@ function addMessage(text, sender) {
   messages.scrollTop = messages.scrollHeight;
 
 }
+
