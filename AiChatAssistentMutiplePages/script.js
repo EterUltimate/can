@@ -107,24 +107,128 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========== 各页面初始化函数 ==========
-function initChatPage() {
+async function initChatPage() {
   const sendBtn = document.getElementById('sendBtn');
   const input = document.getElementById('messageInput');
-  
-  // 模拟加载历史（可扩展）
-  addMessage("你好！我是 AI 助手，有什么可以帮您？", 'ai');
-  
-  sendBtn?.addEventListener('click', async () => {
+  const messagesContainer = document.querySelector('.chat-messages');
+
+  // 加载历史消息（可选扩展）
+  addMessage("你好！我是 AI 助手，请问有什么可以帮您？", 'ai');
+
+  sendBtn?.addEventListener('click', handleSendMessage);
+  input?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  });
+
+  async function handleSendMessage() {
     const msg = input.value.trim();
     if (!msg) return;
+
+    // 添加用户消息
     addMessage(msg, 'user');
     input.value = '';
-    
-    // 模拟流式响应（实际应调用 API）
-    setTimeout(() => {
-      addMessage("这是模拟回复。在完整版中，这里会调用你配置的 API。", 'ai');
-    }, 500);
-  });
+
+    // 检查是否设置了 API Key
+    if (!settings.apiKey) {
+      addMessage("⚠️ 请先在「设置」中配置你的 API 密钥！", 'ai');
+      return;
+    }
+
+    // 构造消息历史（简单版：只取最近几条，避免过长）
+    const history = Array.from(messagesContainer.querySelectorAll('.message')).map(el => {
+      const sender = el.classList.contains('user-message') ? 'user' : 'assistant';
+      return { role: sender, content: el.textContent };
+    }).filter(msg => msg.role && msg.content);
+
+    // 确保最后一条是用户消息（当前这条）
+    const messages = [...history.slice(-8), { role: 'user', content: msg }];
+
+    // 显示“AI 正在思考...”
+    const aiMessageEl = document.createElement('div');
+    aiMessageEl.className = 'message ai-message streaming';
+    aiMessageEl.innerHTML = '<i>思考中...</i>';
+    messagesContainer.appendChild(aiMessageEl);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    try {
+      const response = await fetch(getFullUrl('/v1/chat/completions'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${settings.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: settings.model || 'qwen-max', // 默认模型
+          messages: messages,
+          stream: true, // 启用流式响应
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      if (!response.body) {
+        throw new Error('响应无 body，可能不支持流式');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = '';
+      let isDone = false;
+
+      // 清空“思考中”提示
+      aiMessageEl.textContent = '';
+
+      while (!isDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n').filter(line => line.trim().startsWith('data: '));
+
+        for (const line of lines) {
+          if (line === 'data: [DONE]') {
+            isDone = true;
+            break;
+          }
+
+          try {
+            const data = line.substring(6); // 去掉 "data: "
+            if (!data.trim()) continue;
+
+            const json = JSON.parse(data);
+            const content = json.choices?.[0]?.delta?.content || '';
+            if (content) {
+              fullResponse += content;
+              aiMessageEl.textContent = fullResponse;
+              messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+          } catch (e) {
+            console.warn('解析 SSE 数据失败:', line, e);
+          }
+        }
+      }
+
+      // 统计 tokens（如果 API 返回了 usage）
+      // 注意：流式响应通常不会在中间返回 usage，需额外请求或依赖非流式
+      // 这里我们暂时无法获取准确 token 数（除非改用非流式）
+      // 作为替代，我们可以估算（按字符数粗略换算），或后续加一个非流式 fallback
+
+      // 保存 token 统计（这里先跳过，因流式无 usage；你可在 analytics 页说明）
+      // totalInputTokens += ...; totalOutputTokens += ...; saveTokenStats();
+
+    } catch (error) {
+      console.error('API 调用失败:', error);
+      aiMessageEl.innerHTML = `❌ 请求失败: ${error.message || '未知错误'}<br>
+        <small>请检查 API 密钥、URL 或网络</small>`;
+    }
+  }
 }
 
 function initWeatherPage() {
@@ -244,4 +348,5 @@ function addMessage(text, sender) {
   div.textContent = text;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
+
 }
