@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>用量统计</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="chat.html">聊天</a>
+    <a href="weather.html">天气</a>
+    <a href="analytics.html">用量</a>
+    <a href="settings.html">设置</a>
+  </nav>
+
+  <main class="container">
+    <h1>用量统计</h1>
+    <div class="metrics-grid" id="thisSession">
+      <!-- 动态填充 -->
+    </div>
+    <div class="setting-actions">
+      <button id="resetStats" class="btn-secondary">🗑️ 重置统计</button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

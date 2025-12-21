@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>设置</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="chat.html">聊天</a>
+    <a href="weather.html">天气</a>
+    <a href="analytics.html">用量</a>
+    <a href="settings.html">设置</a>
+  </nav>
+
+  <main class="container">
+    <h1>API 设置</h1>
+
+    <div class="setting-item">
+      <label for="apiKey">API 密钥</label>
+      <input type="password" id="apiKey" placeholder="例如：sk-xxx 或自定义密钥" />
+    </div>
+
+    <div class="setting-item">
+      <label for="apiBaseUrl">API 基础 URL</label>
+      <input type="url" id="apiBaseUrl" placeholder="例如：https://api.openai.com" />
+    </div>
+
+    <div class="setting-item">
+      <label>模型选择</label>
+      <div class="model-select-wrapper">
+        <select id="modelSelect" disabled>
+          <option value="">请先保存设置以加载模型</option>
+        </select>
+        <button type="button" id="refreshModels" class="refresh-btn">🔄 刷新</button>
+      </div>
+    </div>
+
+    <div class="setting-actions">
+      <button id="saveSettings" class="btn-primary">💾 保存设置</button>
+      <button id="themeToggle" class="btn-secondary">🌓 切换主题</button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

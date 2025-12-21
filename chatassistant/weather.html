@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>天气查询</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="chat.html">聊天</a>
+    <a href="weather.html">天气</a>
+    <a href="analytics.html">用量</a>
+    <a href="settings.html">设置</a>
+  </nav>
+
+  <main class="container">
+    <h1>天气查询</h1>
+    <div class="setting-item">
+      <label for="cityInput">城市名称</label>
+      <input type="text" id="cityInput" placeholder="例如：北京" />
+    </div>
+    <div class="weather-card" id="weatherDisplay">
+      <p>请输入城市并按回车查询</p>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
